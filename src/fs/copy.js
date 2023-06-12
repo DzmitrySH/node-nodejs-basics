@@ -5,24 +5,23 @@ const copyFolder = "src/fs/files_copy";
 const fsFailed = "FS operation failed";
 
 const copy = async () => {
-    let flagsFolderCopy; 
+  let flagsFolderCopy;
+  try {
     try {
-        try {
-            await access(copyFolder, constants.F_OK);
-            flagsFolderCopy = true;
-        } catch (error) {
-            flagsFolderCopy = false;
-        }
-        if(flagsFolderCopy)
-          throw new Error(fsFailed);
-          
-        await cp(originalFolder, copyFolder, { recursive: true });
+      await access(copyFolder, constants.F_OK);
+      flagsFolderCopy = true;
     } catch (error) {
-        console.log(error);
-        if (error.code === "ENOENT") {
-          throw new Error(fsFailed);
-        }
-    } 
+      flagsFolderCopy = false;
+    }
+    if (flagsFolderCopy) throw new Error(fsFailed);
+
+    await cp(originalFolder, copyFolder, { recursive: true });
+  } catch (error) {
+    console.log(error);
+    if (error.code === "ENOENT") {
+      throw new Error(fsFailed);
+    }
+  }
 };
 
 await copy();
